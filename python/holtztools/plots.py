@@ -2,7 +2,7 @@
 import matplotlib.pyplot as plt
 from scipy.spatial import KDTree
 from scipy.stats import gaussian_kde
-from tools import struct
+from . import struct
 import numpy as np
 import sys
 import pdb
