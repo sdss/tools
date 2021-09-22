@@ -7,9 +7,9 @@ setup(
     url='https://github.com/holtzmanjon/tools',
     author='Jon Holtzman',
     author_email='holtz@nmsu.edu',
-    license='BSD 2-clause',
+    license='MIT',
     packages=['tools'],
-    package_dir={"": "python/ptools"},
+    package_dir={"": "python"},
     install_requires=[
                       'numpy',                     
                       ],
