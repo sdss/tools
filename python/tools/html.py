@@ -83,8 +83,8 @@ def htmltab(plots, file=None, xtitle=None, ytitle=None, size=100, header=None) :
             f.write('<TD>'+ytitle[iy]+'\n')
         for ix in range(nx) :
             f.write('<TD>\n')
-            f.write('<A HREF='+p[iy][ix]+'>'+
-                    '<IMG SRC='+p[iy][ix]+' WIDTH='+str(size)+'%></A>\n')
+            f.write('<A HREF="'+p[iy][ix]+'">'+
+                    '<IMG SRC="'+p[iy][ix]+'" WIDTH='+str(size)+'%></A>\n')
             f.write('</TD>\n')
     f.write('</TABLE>\n')
     tail(f)
