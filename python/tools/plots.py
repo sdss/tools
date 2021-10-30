@@ -56,11 +56,12 @@ def event(fig) :
             _block = 0
             fig.canvas.stop_event_loop()
     cid = fig.canvas.mpl_connect('key_press_event',onpress)
+    if _block == 1 : fig.canvas.start_event_loop(0)
 
-def mark(fig,index=True) :
+def mark(fig,index=False) :
     global _block, _x, _y, _button
     _block = 1
-    fig.canvas.start_event_loop(0)
+    event(fig)
     if index :return _x, _y, _button, _index[0]
     else : return _x, _y, _button
 
