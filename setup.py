@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='holtz-tools',
-    version='0.1.0',    
+    version='0.2.0',    
     description='Python utility tools',
     url='https://github.com/holtzmanjon/tools',
     author='Jon Holtzman',
