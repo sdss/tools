@@ -31,27 +31,30 @@ def event(fig) :
     def onpress(event) :
         global _index, _block, _x, _y, _button, _new_data, tree, _axes
         _button = event.key
-        inv = event.inaxes.transData.inverted()
-        _x,_y = inv.transform((event.x,event.y))
-        #print(_x, _y)
-        #A[KDTree(A).query([event.x,event.y])[1]]
-        #distance,index = KDTree(A).query([event.x,event.y])
-        if _data_x is not None and _data_y is not None :
-            #print('Transform', len(_data_x))
-            # n key will reset transformation, e.g. if limits changed interactively
-            if _button == 'n' or _new_data or event.inaxes != _axes :
-                A = event.inaxes.transData.transform(list(zip(_data_x,_data_y)))
-                #print('KDTree')
-                tree=KDTree(A)
-                _new_data = False
-                _axes = event.inaxes
-            #print('query')
-            distance,index = tree.query([event.x,event.y])
-            _index = [index]
-            if _data is not None :
-                struct.list(_data,ind=_index,cols=_id_cols)
-            else :
-                print('_index: ',_index,_data_x[_index],_data_y[_index])
+        try:
+            inv = event.inaxes.transData.inverted()
+            _x,_y = inv.transform((event.x,event.y))
+            #print(_x, _y)
+            #A[KDTree(A).query([event.x,event.y])[1]]
+            #distance,index = KDTree(A).query([event.x,event.y])
+            if _data_x is not None and _data_y is not None :
+                #print('Transform', len(_data_x))
+                # n key will reset transformation, e.g. if limits changed interactively
+                if _button == 'n' or _new_data or event.inaxes != _axes :
+                    A = event.inaxes.transData.transform(list(zip(_data_x,_data_y)))
+                    #print('KDTree')
+                    tree=KDTree(A)
+                    _new_data = False
+                    _axes = event.inaxes
+                #print('query')
+                distance,index = tree.query([event.x,event.y])
+                _index = [index]
+                if _data is not None :
+                    struct.list(_data,ind=_index,cols=_id_cols)
+                #else :
+                #    print('_index: ',_index,_data_x[_index],_data_y[_index])
+        except :
+            _x,_y = (None,None)
         if _block == 1 :
             _block = 0
             fig.canvas.stop_event_loop()
