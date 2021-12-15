@@ -1,14 +1,14 @@
 from setuptools import setup
 
 setup(
-    name='holtz-tools',
-    version='0.2.0',    
+    name='holtztools',
+    version='1.0.1',    
     description='Python utility tools',
-    url='https://github.com/holtzmanjon/tools',
+    url='https://github.com/sdss/holtztools',
     author='Jon Holtzman',
     author_email='holtz@nmsu.edu',
     license='MIT',
-    packages=['tools'],
+    packages=['holtztools'],
     package_dir={"": "python"},
     install_requires=[
                       'numpy',                     
