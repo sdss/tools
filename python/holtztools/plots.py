@@ -31,36 +31,40 @@ def event(fig) :
     def onpress(event) :
         global _index, _block, _x, _y, _button, _new_data, tree, _axes
         _button = event.key
-        inv = event.inaxes.transData.inverted()
-        _x,_y = inv.transform((event.x,event.y))
-        #print(_x, _y)
-        #A[KDTree(A).query([event.x,event.y])[1]]
-        #distance,index = KDTree(A).query([event.x,event.y])
-        if _data_x is not None and _data_y is not None :
-            #print('Transform', len(_data_x))
-            # n key will reset transformation, e.g. if limits changed interactively
-            if _button == 'n' or _new_data or event.inaxes != _axes :
-                A = event.inaxes.transData.transform(list(zip(_data_x,_data_y)))
-                #print('KDTree')
-                tree=KDTree(A)
-                _new_data = False
-                _axes = event.inaxes
-            #print('query')
-            distance,index = tree.query([event.x,event.y])
-            _index = [index]
-            if _data is not None :
-                struct.list(_data,ind=_index,cols=_id_cols)
-            else :
-                print('_index: ',_index,_data_x[_index],_data_y[_index])
+        try:
+            inv = event.inaxes.transData.inverted()
+            _x,_y = inv.transform((event.x,event.y))
+            #print(_x, _y)
+            #A[KDTree(A).query([event.x,event.y])[1]]
+            #distance,index = KDTree(A).query([event.x,event.y])
+            if _data_x is not None and _data_y is not None :
+                #print('Transform', len(_data_x))
+                # n key will reset transformation, e.g. if limits changed interactively
+                if _button == 'n' or _new_data or event.inaxes != _axes :
+                    A = event.inaxes.transData.transform(list(zip(_data_x,_data_y)))
+                    #print('KDTree')
+                    tree=KDTree(A)
+                    _new_data = False
+                    _axes = event.inaxes
+                #print('query')
+                distance,index = tree.query([event.x,event.y])
+                _index = [index]
+                if _data is not None :
+                    struct.list(_data,ind=_index,cols=_id_cols)
+                #else :
+                #    print('_index: ',_index,_data_x[_index],_data_y[_index])
+        except :
+            _x,_y = (None,None)
         if _block == 1 :
             _block = 0
             fig.canvas.stop_event_loop()
     cid = fig.canvas.mpl_connect('key_press_event',onpress)
+    if _block == 1 : fig.canvas.start_event_loop(0)
 
-def mark(fig,index=True) :
+def mark(fig,index=False) :
     global _block, _x, _y, _button
     _block = 1
-    fig.canvas.start_event_loop(0)
+    event(fig)
     if index :return _x, _y, _button, _index[0]
     else : return _x, _y, _button
 
@@ -114,8 +118,8 @@ def plotc(ax,x,y,z,yerr=None,xr=None,yr=None,zr=None,size=5,cmap='rainbow',color
         cb=plt.colorbar(scat,ax=ax,orientation=orientation)
         cb.ax.set_ylabel(zt)
     if draw : plt.draw()
-    _data_x = x[np.isfinite(x)]
-    _data_y = y[np.isfinite(y)]
+    _data_x = np.array(x)[np.isfinite(x)]
+    _data_y = np.array(y)[np.isfinite(y)]
     _new_data = True
     return scat
 
@@ -291,7 +295,7 @@ def ax(subplot=111) :
     fig=plt.figure()
     return fig.add_subplot(subplot)
 
-def multi(nx,ny,figsize=None,hspace=1,wspace=1,sharex=False,sharey=False,squeeze=True,xtickrot=None) :
+def multi(nx,ny,figsize=None,hspace=1,wspace=1,sharex=False,sharey=False,squeeze=True,xtickrot=None,brokenx=False) :
     '''
     Returns figure and axes array for grid of nx by ny plots, suppressing appropriate axes if requested by hspace and wspace
 
@@ -332,6 +336,23 @@ def multi(nx,ny,figsize=None,hspace=1,wspace=1,sharex=False,sharey=False,squeeze
                 for j in range(ny) : 
                     ticklabels = ticklabels + ax[j,i].get_yticklabels()
         plt.setp(ticklabels, visible=False)
+    if brokenx & (nx>1) :
+        for i in range(0,nx) :
+          for j in range(0,ny) :
+            if ny == 1 : tmpax=ax[i]
+            else : tmpax=ax[j,i]
+            if i > 0 : 
+                tmpax.spines['left'].set_visible(False)
+                tmpax.tick_params(labelleft=False,left=False)  # don't put tick labels at the top
+            tmpax.spines['right'].set_visible(False)
+            tmpax.spines['top'].set_visible(False)
+            tmpax.tick_params(labeltop=False)  # don't put tick labels at the top
+            d=0.02
+            if i < nx-1 :
+                tmpax.plot([1-d,1+d],[-d,d],transform=tmpax.transAxes,color='k',clip_on=False)
+            if i > 0 :
+                tmpax.plot([-d,+d],[-d,d],transform=tmpax.transAxes,color='k',clip_on=False)
+
     if xtickrot is not None :
       for i in range(nx) :
         for j in range(0,ny) : 
