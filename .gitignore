@@ -1,1 +1,4 @@
 *.pyc
+dist
+python/holtz_tools.egg-info
+doc/build

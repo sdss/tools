@@ -4,6 +4,7 @@ Utilities for numpy structured arrays
 
 import numpy as np
 import glob
+import os
 import sys
 import pdb
 import copy
@@ -220,7 +221,7 @@ def wrfits(a,file) :
     write input structure to FITS file
     '''
     tab=fits.BinTableHDU.from_columns(a)
-    tab.writeto(file,clobber=True)
+    tab.writeto(file,overwrite=True)
 
 
 def dict2struct(d) :
