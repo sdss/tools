@@ -1,4 +1,7 @@
 #import matplotlib.colors as colors
+
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from scipy.spatial import KDTree
 from scipy.stats import gaussian_kde
